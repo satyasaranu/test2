@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: create group
+      group: 
+        name: ansiblegp
+    - name: create users
+      user: 
+        name: ansibletest
+        group: ansiblegp
+        state: present
+        
