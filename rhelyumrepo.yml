@@ -1,0 +1,16 @@
+--- 
+- hosts: 192.168.1.64
+  become: yes
+  tasks: 
+    - name: configure yum repo on RHEL 7 system
+      yum_repository:
+         name: rhel7
+         description: Veritis RHEL7 Repo
+         baseurl: http://192.168.1.19/REPOS/RHEL7/
+         enabled: yes
+         gpgcheck: no
+         state: absent
+      when: ansible_distribution == 'RedHat'
+
+      
+  

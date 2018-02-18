@@ -1,0 +1,34 @@
+---
+- hosts: ec2-34-228-16-49.compute-1.amazonaws.com
+  become: yes
+  tasks: 
+#    - command: amazon-linux-extras install lamp-mariadb10.2-php7.2
+    - name: install LAMP packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items: 
+          - httpd
+          - php
+          - mariadb-server
+          - php-mysqlnd
+          - php-mbstring
+    - name: start apache service
+      service: name=httpd state=started enabled=yes
+    - name: copy PHP file to remote location
+      copy: 
+        content: |
+            <?php phpinfo(); ?>
+        dest: /var/www/html/phpinfo.php
+    - name: start MariaDB servers
+      service: name=mariadb state=started enabled=yes
+    - name: download phpMyadmin package
+      get_url: 
+         url: https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+         dest: /var/www/html/
+    - unarchive:
+        src: /var/www/html/phpMyAdmin-4.7.7-all-languages.tar.gz
+        dest: /var/www/html/
+        remote_src: yes
+    - command: mv /var/www/html/phpMyAdmin-4.7.7-all-languages /var/www/html/phpMyAdmin
+ 
